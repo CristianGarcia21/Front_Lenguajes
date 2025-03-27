@@ -80,8 +80,7 @@ export class FormGramaticaComponent {
     for (let i = 1; i < this.producciones.length; i++) {
       const produccion = this.producciones[i].value;
       
-      // Extraer el símbolo no terminal y la regla
-      // Busca patrones como "A: bA | b" o "A -> bA | b" o simplemente "A bA | b"
+      
       const match = produccion.match(/^([A-Z])\s*(?:->|:)?\s*(.*)/);
       
       if (match && match.length >= 3) {
@@ -109,7 +108,7 @@ export class FormGramaticaComponent {
   
     this.isLoading = true;
     this.error = '';
-    this.respuestaBackend = undefined; // Limpiar respuesta anterior
+    this.respuestaBackend = undefined; 
   
     this.apiService.enviarGramatica(formData).subscribe({
       next: (response) => {
@@ -126,7 +125,6 @@ export class FormGramaticaComponent {
         this.mostrarResultado = true;
         this.isLoading = false;
         
-        // Limpiar el formulario
         this.simboloInicial = '';
         this.producciones = [{ value: '' }];
       },

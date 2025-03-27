@@ -60,12 +60,12 @@
     }
     
     <button 
-    type="button" 
-    (click)="enviar()" 
-    class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-  >
-    Enviar
-  </button>
+      type="button" 
+      (click)="enviar()" 
+      class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+    >
+      Enviar
+    </button>
   </form>
 
   @if (mostrarResultado) {
@@ -90,9 +90,27 @@
         <div class="bg-white p-3 rounded border border-gray-200">
           <p class="mb-1"><span class="font-semibold">Símbolo inicial:</span> {{ resultadoSimboloInicial }}</p>
           <p class="font-semibold mb-1">Producciones:</p>
-          <ul class="list-disc pl-5">
-            @for (produccion of resultadoProducciones; track $index) {
-              <li>{{ produccion }}</li>
+          
+          <!-- Mostrar las producciones con formato de gramática formal -->
+          <ul class="list-none pl-0 space-y-1">
+            <!-- Producción inicial -->
+            <li class="flex">
+              <span class="font-mono font-semibold w-8">{{ resultadoSimboloInicial }}</span>
+              <span class="mx-2">→</span>
+              <span>{{ resultadoProducciones[0] }}</span>
+            </li>
+            
+            <!-- Resto de producciones -->
+            @for (produccion of resultadoProducciones; track $index; let i = $index) {
+              @if (i > 0) {
+                <li class="flex">
+                  <!-- Extraer el no terminal de la producción -->
+                  <span class="font-mono font-semibold w-8">{{ produccion.charAt(0) }}</span>
+                  <span class="mx-2">→</span>
+                  <!-- Mostrar el resto de la producción después del primer carácter -->
+                  <span>{{ produccion.substring(produccion.indexOf(' ') + 1) }}</span>
+                </li>
+              }
             }
           </ul>
         </div>
