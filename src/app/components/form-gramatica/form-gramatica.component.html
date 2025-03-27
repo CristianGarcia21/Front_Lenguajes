@@ -2,7 +2,12 @@
   <form>
     <div class="mb-4">
       <label for="initialSymbol" class="block text-gray-700 font-bold mb-2">Simbolo inicial:</label>
-      <input type="text" id="initialSymbol" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <input 
+        type="text" 
+        id="initialSymbol" 
+        [(ngModel)]="simboloInicial" 
+        name="simboloInicial"
+        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
     
     @for (produccion of producciones; track $index) {
@@ -40,6 +45,19 @@
           class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
       </div>
     }
+
+    @if (isLoading) {
+      <div class="flex items-center justify-center py-2 mb-4">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+        <span class="ml-2 text-gray-600">Procesando...</span>
+      </div>
+    }
+    
+    @if (error) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        {{ error }}
+      </div>
+    }
     
     <button 
     type="button" 
@@ -49,4 +67,62 @@
     Enviar
   </button>
   </form>
+
+  @if (mostrarResultado) {
+    <div class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm relative">
+      <!-- Botón X para cerrar -->
+      <button 
+        type="button"
+        (click)="cerrarResultado()"
+        class="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+        aria-label="Cerrar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Resultado:</h3>
+      
+      <!-- Mostrar la gramática formateada enviada al backend -->
+      <div class="mb-4">
+        <h4 class="text-md font-semibold text-gray-700 mb-2">Gramática enviada:</h4>
+        <div class="bg-white p-3 rounded border border-gray-200">
+          <p class="mb-1"><span class="font-semibold">Símbolo inicial:</span> {{ resultadoSimboloInicial }}</p>
+          <p class="font-semibold mb-1">Producciones:</p>
+          <ul class="list-disc pl-5">
+            @for (produccion of resultadoProducciones; track $index) {
+              <li>{{ produccion }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Mostrar el resultado del backend -->
+      @if (respuestaBackend?.lenguaje) {
+        <div class="mb-3">
+          <h4 class="text-md font-semibold text-gray-700 mb-2">Lenguaje generado:</h4>
+          <p class="text-md bg-white p-4 rounded border border-gray-200 whitespace-pre-wrap">
+            {{ respuestaBackend?.lenguaje }}
+          </p>
+        </div>
+      } @else if (respuestaBackend?.error) {
+        <div class="mb-3">
+          <p class="text-md bg-red-50 text-red-700 p-4 rounded border border-red-200">
+            Error: {{ respuestaBackend?.error }}
+          </p>
+        </div>
+      } @else if (respuestaBackend?.mensaje) {
+        <div class="mb-3">
+          <p class="text-md bg-white p-4 rounded border border-gray-200">
+            {{ respuestaBackend?.mensaje }}
+          </p>
+        </div>
+      } @else {
+        <div class="mb-3">
+          <p class="text-sm text-gray-500 italic">No hay datos disponibles</p>
+        </div>
+      }
+    </div>
+  }
 </div>
